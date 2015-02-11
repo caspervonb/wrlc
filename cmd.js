@@ -6,25 +6,24 @@ var http = require('http');
 var mime = require('mime');
 var os = require('os');
 var path = require('path');
+var chokidar = require('chokidar');
 
 var argv = process.argv.slice(2);
-var outfile = path.join(os.tmpdir(), 'index.js');
+var outfile = path.join(os.tmpdir(), 'bundle' + Date.now() + '.js');
 
 argv.push('-o');
 argv.push(outfile);
 
 var bundler = child.spawn('watchify', argv);
-var watcher = fs.watch(outfile);
 
-watcher.on('change', function(event, filename) {
-  if (event == 'change') {
-    console.log(JSON.stringify({
-      time:new Date(),
-      level: 'info',
-      type: event,
-      url: path.basename(filename)
-    }));
-  }
+var watcher = chokidar.watch(outfile);
+watcher.on('change', function(filename) {
+  console.log(JSON.stringify({
+    time:new Date(),
+    level: 'info',
+    type: 'change',
+    url: 'index.js'
+  }));
 });
 
 var server = http.createServer(function(req, res) {
