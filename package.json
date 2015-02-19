@@ -5,12 +5,14 @@
   "bin": {
     "wrlc": "cmd.js"
   },
+  "main": "index.js",
   "files": [
+    "index.js",
     "cmd.js"
   ],
   "dependencies": {
-    "chokidar": "^1.0.0-rc3",
-    "mime": "^1.3.4"
+    "mime": "^1.3.4",
+    "commander": "~2.6.0"
   },
   "devDependencies": {},
   "scripts": {
@@ -18,7 +20,6 @@
   },
   "author": "Casper Beyer <caspervonb@qup.io>",
   "license": "MIT",
-  "main": "cmd.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/caspervonb/wrlc.git"

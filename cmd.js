@@ -1,70 +1,49 @@
 #!/usr/bin/env node
 
-var child = require('child_process');
-var fs = require('fs');
-var http = require('http');
-var mime = require('mime');
-var os = require('os');
-var path = require('path');
-var chokidar = require('chokidar');
+var cmd = require('commander');
+var temp = require('temp');
+var wrlc = require('./');
 
-var argv = process.argv.slice(2);
-var outfile = path.join(os.tmpdir(), 'bundle' + Date.now() + '.js');
+cmd.usage('[OPTION] ... [FILE]...');
+cmd.option('-p, --port <PORT>', '', 9966);
+cmd.option('-b, --bundler <CMD>', '', 'watchify');
+cmd.option('-o, --outfile <PATH>', '', temp.path({prefix: 'wrlc', suffix: '.js'}));
 
-argv.push('-o');
-argv.push(outfile);
+cmd.allowUnknownOption();
 
-var bundler = child.spawn('watchify', argv);
+cmd.parse(process.argv);
+var server = wrlc.serve(cmd, function(error) {
+  if (error) {
+    return console.error(error);
+  }
 
-var watcher = chokidar.watch(outfile);
-watcher.on('change', function(filename) {
+  var address = server.address();
+});
+
+cmd.argv = (function() {
+  var argv = process.argv;
+  
+  if (argv.indexOf('-o') > -1 || argv.indexOf('--outfile') > -1) {
+    return argv;
+  }
+  
+  argv.push('--outfile');
+  argv.push(cmd.outfile);
+  
+  return argv;
+}());
+
+var bundler = wrlc.bundle(cmd, function(error) {
+  if (error) {
+    return console.error(error);  
+  }
+});
+
+bundler.on('change', function(filename) {
   console.log(JSON.stringify({
     time:new Date(),
     level: 'info',
     type: 'change',
     url: 'index.js'
-  }));
-});
-
-var server = http.createServer(function(req, res) {
-  var url = req.url;
-
-  console.log(JSON.stringify({
-    time:new Date(),
-    level: 'info',
-    type: 'request',
-    url: url,
-  }));
-
-  if (url == '/') {
-    res.setHeader('content-type', 'text/html');
-    res.end('<!doctype html><head><meta charset="utf-8"></head><body><script src="index.js"></script></body></html>');
-  } else {
-    var file = (url == '/index.js') ? outfile : file = path.join(process.cwd(), req.url);
-
-    fs.exists(file, function(exists) {
-      if (exists) {
-        fs.readFile(file, function(error, buffer) {
-          if (error) {
-            res.writeHead(500);
-            res.end('500');
-          }
-
-          res.setHeader('content-type', mime.lookup(file));
-          res.writeHead(200);
-          res.write(buffer);
-          res.end();
-        });
-      } else {
-        res.writeHead(404);
-        res.end('404');
-      }
-    });
-  }
-}).listen(9966, function() {
-  console.log(JSON.stringify({
-    time:new Date(),
-    level: 'info',
-    message: 'http running on 9966',
   }));
 });
