@@ -14,7 +14,8 @@ var outfile = path.join(os.tmpdir(), 'bundle' + Date.now() + '.js');
 argv.push('-o');
 argv.push(outfile);
 
-var bundler = child.spawn('watchify', argv);
+var watchify = process.platform === 'win32' ? 'watchify.cmd' : 'watchify';
+var bundler = child.spawn(watchify, argv);
 
 var watcher = chokidar.watch(outfile);
 watcher.on('change', function(filename) {
