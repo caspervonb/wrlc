@@ -15,7 +15,7 @@ function serve(options, callback) {
       if (request.url == '/index.js') {
         var filename = options.outfile;
       } else {
-        var filename = path.join(process.cwd(). request.url);        
+        var filename = path.join(process.cwd(), request.url);
       }
 
       fs.exists(filename, function(exists) {
