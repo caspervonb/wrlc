@@ -6,6 +6,7 @@ var wrlc = require('./');
 
 cmd.usage('[OPTION] ... [FILE]...');
 cmd.option('-p, --port <PORT>', '', 9966);
+cmd.option('-p, --host <HOST>', '', 'localhost');
 cmd.option('-b, --bundler <CMD>', '', 'watchify');
 cmd.option('-o, --outfile <PATH>', '', temp.path({prefix: 'wrlc', suffix: '.js'}));
 
