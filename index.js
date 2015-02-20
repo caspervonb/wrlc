@@ -33,7 +33,7 @@ function serve(options, callback) {
     }
   });
 
-  server.listen(options.port, callback);
+  server.listen(options.port, options.host, callback);
   return server;
 }
 
