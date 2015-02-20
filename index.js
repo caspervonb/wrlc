@@ -3,6 +3,7 @@ var mime = require('mime');
 var fs = require('fs');
 var path = require('path');
 var child = require('child_process');
+var util = require('util');
 
 function serve(options, callback) {
   var server = http.createServer(function(request, response) {    
@@ -51,6 +52,13 @@ function bundle(options, callback) {
   return bundler;
 }
 
+function browse(options, callback) {
+  console.log(options.browser);
+  var browser = child.spawn(options.browser, [util.format('http://%s:%d', options.host, options.port)]);
+
+  return browser;
+}
 
 module.exports.serve = serve;
 module.exports.bundle = bundle;
+module.exports.browse = browse;

@@ -8,6 +8,7 @@ cmd.usage('[OPTION] ... [FILE]...');
 cmd.option('-p, --port <PORT>', '', 9966);
 cmd.option('-p, --host <HOST>', '', 'localhost');
 cmd.option('-b, --bundler <CMD>', '', 'watchify');
+cmd.option('-c, --browser <CMD>', '', process.env['BROWSER']);
 cmd.option('-o, --outfile <PATH>', '', temp.path({prefix: 'wrlc', suffix: '.js'}));
 
 cmd.allowUnknownOption();
@@ -47,4 +48,10 @@ bundler.on('change', function(filename) {
     type: 'change',
     url: 'index.js'
   }));
+});
+
+var browser = wrlc.browse(cmd, function(error) {
+  if (error) {
+    return console.error(error);
+  }
 });
