@@ -23,7 +23,7 @@ var server = wrlc.serve(cmd, function(error) {
 });
 
 cmd.argv = (function() {
-  var argv = process.argv;
+  var argv = process.argv.slice(2);
   
   if (argv.indexOf('-o') > -1 || argv.indexOf('--outfile') > -1) {
     return argv;
