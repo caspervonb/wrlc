@@ -43,15 +43,17 @@ var bundler = wrlc.bundle(cmd, function(error) {
 
 bundler.on('change', function(filename) {
   console.log(JSON.stringify({
-    time:new Date(),
+    time: new Date(),
     level: 'info',
     type: 'change',
     url: 'index.js'
   }));
 });
 
-var browser = wrlc.browse(cmd, function(error) {
-  if (error) {
-    return console.error(error);
-  }
-});
+if (cmd.browser) {
+  var browser = wrlc.browse(cmd, function(error) {
+    if (error) {
+      return console.error(error);
+    }
+  });
+}
