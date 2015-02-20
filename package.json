@@ -1,6 +1,6 @@
 {
   "name": "wrlc",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "It's like a wzrd but likes watching",
   "bin": {
     "wrlc": "cmd.js"
