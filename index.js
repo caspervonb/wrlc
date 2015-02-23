@@ -43,12 +43,20 @@ function bundle(options, callback) {
   var dirname = path.dirname(options.outfile);
   var basename = path.basename(options.outfile);
 
+  var timeout = [];
   fs.watch(dirname, function(event, filename) {
     if (basename == filename) {
-      bundler.emit(event, filename);
+      if (!timeout[event]) {
+        bundler.emit(event, filename);
+
+        timeout[event] = setTimeout(function() {
+          timeout[event] = null;
+        }, 600);
+      }
+
     }
   });
-  
+
   return bundler;
 }
 
